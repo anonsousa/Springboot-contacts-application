@@ -1,0 +1,3 @@
+ALTER TABLE contacts
+ADD COLUMN password VARCHAR(100) NOT NULL,
+ADD CONSTRAINT email_unique UNIQUE (email);

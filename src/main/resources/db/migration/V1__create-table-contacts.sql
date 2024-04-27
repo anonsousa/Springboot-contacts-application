@@ -1,0 +1,6 @@
+CREATE TABLE contacts (
+    id SERIAL PRIMARY KEY UNIQUE,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    birth_date DATE NOT NULL
+);
