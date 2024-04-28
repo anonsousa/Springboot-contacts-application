@@ -5,6 +5,8 @@ import br.com.project.contact.domain.dto.ContactShowDto;
 import br.com.project.contact.domain.dto.ContactUpdateDto;
 import br.com.project.contact.domain.model.Contact;
 import br.com.project.contact.domain.repository.ContactRepository;
+import br.com.project.contact.infra.exception.ContactNotFoundException;
+import br.com.project.contact.infra.exception.InvalidPasswordException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -12,7 +14,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -36,7 +37,7 @@ public class ContactService {
             return new ContactShowDto(contact0.get());
         }
         else {
-            throw new RuntimeException("Contact not found.");
+            throw new ContactNotFoundException("Contact not found");
         }
     }
 
@@ -55,7 +56,7 @@ public class ContactService {
             contactRepository.deleteById(contact0.get().getId());
         }
         else {
-            throw new RuntimeException("Contact not found.");
+            throw new ContactNotFoundException("Contact not found.");
         }
     }
 
@@ -82,11 +83,11 @@ public class ContactService {
                 BeanUtils.copyProperties(contactUpdateDto, existingContact);
                 return new ContactShowDto(contactRepository.save(existingContact));
             }else {
-                throw new RuntimeException("Wrong password!");
+                throw new InvalidPasswordException("Wrong password!");
             }
         }
         else {
-            throw new RuntimeException("Contact not found.");
+            throw new ContactNotFoundException("Contact not found.");
         }
     }
 

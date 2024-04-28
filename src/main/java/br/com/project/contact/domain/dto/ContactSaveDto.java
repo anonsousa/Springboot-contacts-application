@@ -7,19 +7,20 @@ import java.time.LocalDate;
 
 public record ContactSaveDto(
 
-    @NotBlank
+    @NotBlank(message = "Name is mandatory!")
     @Pattern(regexp = "^[a-zA-ZÀ-ÖØ-öø-ÿ\\s]+$", message = "Invalid name.")
+    @Size(min = 3, max = 100, message = "Min length for name:2, max: 99")
     String name,
 
-    @NotNull
-    @Email
+    @NotBlank(message = "Email is mandatory!")
+    @Email(message = "Please fill email with a valid format!")
     String email,
 
-    @NotBlank
+    @NotBlank(message = "Password is mandatory!")
             @Size(min = 8, max = 16, message = "Min length 8, max 16.")
     String password,
 
-    @NotNull
+    @NotNull(message = "Birthdate can't be null!")
     LocalDate birthDate
 
 ) {

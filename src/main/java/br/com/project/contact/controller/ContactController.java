@@ -39,7 +39,8 @@ public class ContactController {
     }
 
     @GetMapping("/name/{name}")
-    public ResponseEntity<Page<ContactShowDto>> getName(@PathVariable(value = "name")String name, Pageable pageable){
+    public ResponseEntity<Page<ContactShowDto>> getName(@PathVariable(value = "name")String name,
+                                                        Pageable pageable){
         return ResponseEntity.status(HttpStatus.OK).body(contactService.findAllbyName(name, pageable));
     }
 
