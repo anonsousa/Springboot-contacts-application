@@ -51,6 +51,12 @@ public class ContactController {
         return ResponseEntity.status(HttpStatus.OK).body(contactService.findBirthdays(startDate, endDate, pageable));
     }
 
+    @GetMapping("/names/{name}")
+    public ResponseEntity<Page<ContactShowDto>> getByNameWithQuery(@PathVariable(value = "name")String name,
+                                                                   Pageable pageable){
+        return ResponseEntity.status(HttpStatus.OK).body(contactService.findAllByNameWithQuery(name, pageable));
+    }
+
     @PutMapping
     public ResponseEntity updateId(@RequestBody @Valid ContactUpdateDto contactUpdateDto){
         return ResponseEntity.status(HttpStatus.OK).body(contactService.update(contactUpdateDto));

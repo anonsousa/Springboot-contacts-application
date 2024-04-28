@@ -72,6 +72,16 @@ public class ContactService {
         return contactPage.map(contact -> new ContactShowDto(contact.getId(), contact.getName(), contact.getEmail(), contact.getBirthDate()));
     }
 
+    public Page<ContactShowDto> findAllByNameWithQuery(String name, Pageable pageable){
+        Page<Contact> contactPage = contactRepository.findContactByName(name, pageable);
+        if(!contactPage.isEmpty()){
+            return contactPage.map(contact -> new ContactShowDto(contact.getId(), contact.getName(), contact.getEmail(), contact.getBirthDate()));
+        }else {
+            throw new ContactNotFoundException("We don't have this name on our database.");
+        }
+
+    }
+
 
     public ContactShowDto update(ContactUpdateDto contactUpdateDto){
         Optional<Contact> contact0 = contactRepository.findById(contactUpdateDto.id());
@@ -90,7 +100,4 @@ public class ContactService {
             throw new ContactNotFoundException("Contact not found.");
         }
     }
-
-
-
 }
