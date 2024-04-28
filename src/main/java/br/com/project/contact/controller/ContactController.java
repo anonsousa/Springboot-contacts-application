@@ -1,6 +1,5 @@
 package br.com.project.contact.controller;
 
-
 import br.com.project.contact.domain.dto.ContactSaveDto;
 import br.com.project.contact.domain.dto.ContactShowDto;
 import br.com.project.contact.domain.dto.ContactUpdateDto;
@@ -14,6 +13,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/contacts")
@@ -40,6 +41,13 @@ public class ContactController {
     @GetMapping("/name/{name}")
     public ResponseEntity<Page<ContactShowDto>> getName(@PathVariable(value = "name")String name, Pageable pageable){
         return ResponseEntity.status(HttpStatus.OK).body(contactService.findAllbyName(name, pageable));
+    }
+
+    @GetMapping("/birthday/{startDate}/{endDate}")
+    public ResponseEntity<Page<ContactShowDto>> getByBirthday(@PathVariable(value = "startDate") LocalDate startDate,
+                                                              @PathVariable(value = "endDate")LocalDate endDate,
+                                                              Pageable pageable){
+        return ResponseEntity.status(HttpStatus.OK).body(contactService.findBirthdays(startDate, endDate, pageable));
     }
 
     @PutMapping

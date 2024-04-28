@@ -60,16 +60,16 @@ public class ContactService {
     }
 
 
-
-    public List<Contact> findBirthdays(LocalDate startDate, LocalDate endDate){
-        return contactRepository.findByBirthDateBetween(startDate, endDate);
+    public Page<ContactShowDto> findBirthdays(LocalDate startDate, LocalDate endDate, Pageable pageable){
+        Page<Contact> contactPage = contactRepository.findByBirthDateBetween(startDate, endDate, pageable);
+        return contactPage.map(contact -> new ContactShowDto(contact.getId(), contact.getName(), contact.getEmail(), contact.getBirthDate()));
     }
+
 
     public Page<ContactShowDto> findAllbyName(String name, Pageable pageable){
         Page<Contact> contactPage = contactRepository.findByName(name, pageable);
         return contactPage.map(contact -> new ContactShowDto(contact.getId(), contact.getName(), contact.getEmail(), contact.getBirthDate()));
     }
-
 
 
     public ContactShowDto update(ContactUpdateDto contactUpdateDto){
@@ -84,7 +84,6 @@ public class ContactService {
             }else {
                 throw new RuntimeException("Wrong password!");
             }
-
         }
         else {
             throw new RuntimeException("Contact not found.");
