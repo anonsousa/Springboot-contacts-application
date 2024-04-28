@@ -17,52 +17,52 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 
 @RestController
-@RequestMapping("/contacts")
+@RequestMapping("/api")
 public class ContactController {
 
     @Autowired
     private ContactService contactService;
 
-    @PostMapping
+    @PostMapping("/contacts")
     public ResponseEntity save(@RequestBody @Valid ContactSaveDto contactSaveDto){
         return ResponseEntity.status(HttpStatus.CREATED).body(contactService.save(contactSaveDto));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/contacts/{id}")
     public ResponseEntity getOneId(@PathVariable(value = "id") Long id){
         return ResponseEntity.status(HttpStatus.OK).body(contactService.findOneId(id));
     }
 
-    @GetMapping
+    @GetMapping("/contacts")
     public Page<ContactShowDto> getAllIds(Pageable pageable){
         return contactService.findAllIds(pageable);
     }
 
-    @GetMapping("/name/{name}")
-    public ResponseEntity<Page<ContactShowDto>> getName(@PathVariable(value = "name")String name,
+    @GetMapping(value = "/contacts", params = "name")
+    public ResponseEntity<Page<ContactShowDto>> getName(@RequestParam String name,
                                                         Pageable pageable){
         return ResponseEntity.status(HttpStatus.OK).body(contactService.findAllbyName(name, pageable));
     }
 
-    @GetMapping("/birthday/{startDate}/{endDate}")
-    public ResponseEntity<Page<ContactShowDto>> getByBirthday(@PathVariable(value = "startDate") LocalDate startDate,
-                                                              @PathVariable(value = "endDate")LocalDate endDate,
+    @GetMapping(value = "/contacts", params = {"startDate","endDate"})
+    public ResponseEntity<Page<ContactShowDto>> getByBirthday(@RequestParam(value = "startDate") LocalDate startDate,
+                                                              @RequestParam(value = "endDate")LocalDate endDate,
                                                               Pageable pageable){
         return ResponseEntity.status(HttpStatus.OK).body(contactService.findBirthdays(startDate, endDate, pageable));
     }
 
-    @GetMapping("/names/{name}")
-    public ResponseEntity<Page<ContactShowDto>> getByNameWithQuery(@PathVariable(value = "name")String name,
+    @GetMapping(value = "/contacts", params = "nameQuery")
+    public ResponseEntity<Page<ContactShowDto>> getByNameWithQuery(@RequestParam(value = "nameQuery")String name,
                                                                    Pageable pageable){
         return ResponseEntity.status(HttpStatus.OK).body(contactService.findAllByNameWithQuery(name, pageable));
     }
 
-    @PutMapping
+    @PutMapping("/contacts")
     public ResponseEntity updateId(@RequestBody @Valid ContactUpdateDto contactUpdateDto){
         return ResponseEntity.status(HttpStatus.OK).body(contactService.update(contactUpdateDto));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/contacts/{id}")
     public ResponseEntity deleteId(@PathVariable(value = "id") Long id){
         contactService.deleteId(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Contact deleted successfully!");

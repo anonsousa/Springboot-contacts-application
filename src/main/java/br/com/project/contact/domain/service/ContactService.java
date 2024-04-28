@@ -49,27 +49,23 @@ public class ContactService {
     }
 
 
-
-    public void deleteId(Long id){
-        Optional<Contact> contact0 = contactRepository.findById(id);
-        if (contact0.isPresent()){
-            contactRepository.deleteById(contact0.get().getId());
-        }
-        else {
-            throw new ContactNotFoundException("Contact not found.");
-        }
-    }
-
-
     public Page<ContactShowDto> findBirthdays(LocalDate startDate, LocalDate endDate, Pageable pageable){
         Page<Contact> contactPage = contactRepository.findByBirthDateBetween(startDate, endDate, pageable);
-        return contactPage.map(contact -> new ContactShowDto(contact.getId(), contact.getName(), contact.getEmail(), contact.getBirthDate()));
+        if (!contactPage.isEmpty()){
+            return contactPage.map(contact -> new ContactShowDto(contact.getId(), contact.getName(), contact.getEmail(), contact.getBirthDate()));
+        }else{
+            throw new ContactNotFoundException("We don't have any birthDate based on this Query.");
+        }
     }
 
 
     public Page<ContactShowDto> findAllbyName(String name, Pageable pageable){
         Page<Contact> contactPage = contactRepository.findByName(name, pageable);
-        return contactPage.map(contact -> new ContactShowDto(contact.getId(), contact.getName(), contact.getEmail(), contact.getBirthDate()));
+        if(!contactPage.isEmpty()){
+            return contactPage.map(contact -> new ContactShowDto(contact.getId(), contact.getName(), contact.getEmail(), contact.getBirthDate()));
+        }else{
+            throw new ContactNotFoundException("We don't have this name on our database.");
+        }
     }
 
     public Page<ContactShowDto> findAllByNameWithQuery(String name, Pageable pageable){
@@ -79,7 +75,6 @@ public class ContactService {
         }else {
             throw new ContactNotFoundException("We don't have this name on our database.");
         }
-
     }
 
 
@@ -95,6 +90,17 @@ public class ContactService {
             }else {
                 throw new InvalidPasswordException("Wrong password!");
             }
+        }
+        else {
+            throw new ContactNotFoundException("Contact not found.");
+        }
+    }
+
+
+    public void deleteId(Long id){
+        Optional<Contact> contact0 = contactRepository.findById(id);
+        if (contact0.isPresent()){
+            contactRepository.deleteById(contact0.get().getId());
         }
         else {
             throw new ContactNotFoundException("Contact not found.");
