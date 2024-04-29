@@ -84,7 +84,6 @@ public class ContactService {
             Contact existingContact = contact0.get();
 
             if (existingContact.getPassword().equals(contactUpdateDto.password())){
-                var contact = new Contact();
                 BeanUtils.copyProperties(contactUpdateDto, existingContact);
                 return new ContactShowDto(contactRepository.save(existingContact));
             }else {
