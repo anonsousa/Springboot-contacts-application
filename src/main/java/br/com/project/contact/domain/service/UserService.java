@@ -10,6 +10,7 @@ import br.com.project.contact.infra.exception.ContactNotFoundException;
 import br.com.project.contact.infra.exception.InvalidPasswordException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -20,9 +21,13 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public UserShowDto save(UserSignUpDto  userSignUpDto){
+    public UserShowDto save(UserSignUpDto userSignUpDto){
+        String passwordEncrypted = new BCryptPasswordEncoder().encode(userSignUpDto.password());
+
         User user = new User();
         BeanUtils.copyProperties(userSignUpDto, user);
+        user.setPassword(passwordEncrypted);
+
         return new UserShowDto(userRepository.save(user));
     }
 
@@ -36,7 +41,7 @@ public class UserService {
     }
 
     public UserShowDto updateUser(UserUpdateDto userUpdateDto){
-        Optional<User> user0 = userRepository.findById(userUpdateDto.id());
+        Optional<User> user0 = userRepository.findById(userUpdateDto.userId());
         if (user0.isPresent()){
             User existingUser = user0.get();
 

@@ -1,5 +1,6 @@
 package br.com.project.contact.infra.exception;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -16,13 +17,22 @@ public class ApplicationExceptionHandler {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Map<String, String> ManageInvalidArgs(MethodArgumentNotValidException error){
+    public Map<String, String> manageInvalidArgs(MethodArgumentNotValidException error){
         Map<String, String> errorMap = new HashMap<>();
         List<FieldError> fieldErrors = error.getBindingResult().getFieldErrors();
 
         for (FieldError field : fieldErrors){
             errorMap.put(field.getField(), field.getDefaultMessage());
         }
+        return errorMap;
+    }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public Map<String, String> manageDataIntegrityViolation(){
+        Map<String, String> errorMap = new HashMap<>();
+        errorMap.put("Error", "User has already registered!");
+
         return errorMap;
     }
 }
