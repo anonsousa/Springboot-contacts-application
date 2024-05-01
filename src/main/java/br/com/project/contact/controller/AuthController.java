@@ -1,9 +1,12 @@
 package br.com.project.contact.controller;
 
 import br.com.project.contact.domain.dto.AuthUserLoginDto;
+import br.com.project.contact.domain.dto.TokenDto;
 import br.com.project.contact.domain.dto.UserShowDto;
 import br.com.project.contact.domain.dto.UserSignUpDto;
+import br.com.project.contact.domain.model.User;
 import br.com.project.contact.domain.service.UserService;
+import br.com.project.contact.infra.security.TokenService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,6 +29,9 @@ public class AuthController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private TokenService tokenService;
+
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody @Valid AuthUserLoginDto authUserLoginDto){
         UsernamePasswordAuthenticationToken usernamePassword =
@@ -35,7 +41,9 @@ public class AuthController {
                 );
 
         Authentication auth = authenticationManager.authenticate(usernamePassword);
-        return ResponseEntity.ok().build();
+        String token = tokenService.generateToken((User) auth.getPrincipal());
+
+        return ResponseEntity.ok(new TokenDto(token));
     }
 
     @PostMapping("/register")

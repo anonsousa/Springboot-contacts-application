@@ -31,9 +31,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/contacts").hasRole("USER")
-                        .requestMatchers(HttpMethod.POST, "/api/contacts")
-                        .hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/contacts").hasAnyRole("ADMIN", "USER")
+                        .requestMatchers(HttpMethod.POST, "/api/contacts").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/contacts").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/contacts").hasRole("ADMIN")
                         .anyRequest()
                         .authenticated())
                 .addFilterBefore(
